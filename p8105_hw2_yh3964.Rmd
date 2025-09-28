@@ -1,0 +1,12 @@
+---
+title: "p8105_hw2_yh3964"
+author: "Yirou Hu"
+date: "2025-09-26"
+output: github_document
+---
+# Problem 0
+We import the datasets and create all the required files with name. 
+```{r}
+library(tidyverse)
+library(readxl)
+```
