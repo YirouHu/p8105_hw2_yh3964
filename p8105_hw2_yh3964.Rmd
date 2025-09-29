@@ -190,11 +190,11 @@ trash_wheel_whole_df = bind_rows(mr_trash_wheel_df, professor_trash_wheel_df, gw
 relocate(trash_wheel)
 ```
 
-Write a paragraph about these data; you are encouraged to use inline R.
-
+Write a paragraph about these data
+- you are encouraged to use inline R.
 - Be sure to note the number of observations in the resulting dataset, and give examples of key variables. 
 - For available data, what was the total weight of trash collected by Professor Trash Wheel? 
-- What was the total number of cigarette butts collected by Gwynnda in July of 2021?
+- What was the total number of cigarette butts collected by Gwynnda in June of 2022?
 
 
 - `mr_trash_wheel_df` contains `r nrow(mr_trash_wheel_df)` rows and `r ncol(mr_trash_wheel_df)` columns of data.
@@ -203,3 +203,6 @@ Write a paragraph about these data; you are encouraged to use inline R.
 - The final data set `trash_wheel_whole_df` contains `r nrow(trash_wheel_whole_df)` rows and `r ncol(trash_wheel_whole_df)` columns of data. The variables are `r names(trash_wheel_whole_df)`.
 - The total weight of trash collected by Professor Trash Wheel is `r sum(professor_trash_wheel_df$weight_tons)`.
 - The total number of cigarette butts collected by Gwynnda in June of 2022 is `r as.integer(sum(gwynnda_trash_wheel_df$cigarette_butts[which(gwynnda_trash_wheel_df$month == "June" & gwynnda_trash_wheel_df$year == 2022)]))`.
+
+
+# Problem 3
