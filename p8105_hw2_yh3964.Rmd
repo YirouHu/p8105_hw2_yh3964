@@ -51,3 +51,36 @@ pols_month = read_csv("fivethirtyeight_datasets/pols-month.csv") |>
   mutate(year = as.integer(year), day = as.integer(day)) |>
   select(-c("day", "prez_gop", "prez_dem"))
 ```
+
+Second, clean the data in snp.csv
+- arrange according to year and month.
+- organize so that year and month are the leading columns.
+
+```{r}
+snp = read.csv("fivethirtyeight_datasets/snp.csv") |>
+  janitor::clean_names() |>
+  separate(date, into = c("month", "day", "year"), sep = "/" ) |>
+  mutate(month = as.integer(month), year = as.integer(year)) |>
+  arrange(year, month) |>
+  mutate(
+    month = case_match(
+      month,
+      1 ~ "Jan",
+      2 ~ "Feb",
+      3 ~ "Mar",
+      4 ~ "Apr",
+      5 ~ "May",
+      6 ~ "Jun",
+      7 ~ "Jul",
+      8 ~ "Aug",
+      9 ~ "Sep",
+      10 ~ "Oct",
+      11 ~ "Nov",
+      12 ~ "Dec"
+    )) |>
+  relocate(year, month) |>
+  select(-"day")
+
+```
+
+
