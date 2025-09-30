@@ -272,10 +272,20 @@ merged_data_df =
   left_join(zillow_rent_df, zip_codes_df, by = "zip_code") |>
   select(-county, -state) |>
   relocate(zip_code, county_name, neighborhood, rent)
-  
 ```
 
 We will use two ways to check the the ZIP codes appear in the ZIP code dataset but not in the Zillow Rental Price dataset.
+
+Possible reasons for exclusion from Zillow:
+
+- Low population density or limited rental activity: Many of the missing ZIP codes correspond to areas with smaller populations or fewer rental units like Rockaways. Zillow may not have enough transactions to generate reliable rental price estimates.
+
+- Non-residential areas: Some ZIP codes may contain industrial zones, commercial areas, parks, or other non-residential regions, where typical rental data is unavailable.
+
+- Data privacy : Zillow might exclude ZIP codes with very few rental listings to protect the privacy of landlords and tenants, or to avoid publishing unreliable estimates.
+
+
+Take an example of ZIP code 10464, which is absent from Zillow's rental dataset. It may due to insufficient rental listings or low market activity in that area. Furthermore, the region Rockaways we mention aboved is absent from Zillow due to small populations.
 
 ```{r}
 difference_in_zipcodes_df = 
@@ -290,4 +300,26 @@ zip_not_in_zillow =
 zip_not_in_zillow
 ```
 
+The result shows the same output.
+
+- Briefly describe the resulting tidy dataset. 
+- How many total observations exist? How many unique ZIP codes are included
+- How many unique neighborhoods
+
+The resulting tidy dataset `merged_data_df` combines information from the Zillow rental price dataset and the ZIP code dataset for New York City. It is organized in a long format, where each row represents the observed rent for a given ZIP code, neighborhood, and month.
+
+- The dataset contains a total of `r nrow(merged_data_df)` observations.  
+- There are `r n_distinct(merged_data_df$zip_code)` unique ZIP codes included.  
+- The dataset covers `r n_distinct(merged_data_df$neighborhood)` unique neighborhoods across all boroughs.
+- Date range of the rent observations: from `r min(merged_data_df$month)` to `r max(merged_data_df$month)` 
+
+Each observation includes the following variables:
+
+- `zip_code`: the ZIP code of the area  
+- `county_name`: the county name corresponding to the ZIP code  
+- `neighborhood`: the neighborhood name associated with the ZIP code  
+- `month`: the month of the rent observation  
+- `rent`: the Zillow Observed Rent Index (ZORI) for the corresponding month and ZIP code
+
+Missing values in `rent` or `neighborhood` have been removed to ensure completeness. The variables are organized in a meaningful order, with `zip_code`, `county_name`, and `neighborhood` first, followed by rent and month information.
 
