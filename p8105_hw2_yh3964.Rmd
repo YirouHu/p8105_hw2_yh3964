@@ -361,4 +361,25 @@ rent_diff =
   select(county_name, zip_code, neighborhood, drop_price)
 ```
 
+We create a table about top 10 drop with appropriate caption names
+```{r}
+top10_drop =
+  rent_diff |>
+  arrange(drop_price) |>
+  slice_head(n = 10) |>
+  rename(
+    "Borough" = county_name,      
+    "ZIP Code" = zip_code,        
+    "Neighborhood" = neighborhood, 
+    "Price Drop (2020-2021)" = drop_price  
+  )
 
+```
+
+```{r}
+knitr::kable(
+  top10_drop,
+  caption = "Top 10 largest drop in price from January 2020 to 2021",
+  align = "lccc"  
+)
+```
