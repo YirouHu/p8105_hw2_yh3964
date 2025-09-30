@@ -383,3 +383,11 @@ knitr::kable(
   align = "lccc"  
 )
 ```
+
+Comments:
+
+The table shows that all listed ZIP codes in New York County saw a significant drop in rental prices from January 2020 to January 2021, with decreases between about $672 and $913. The biggest decline happened in Lower Manhattan (ZIP 10007), which indicates the strong effect of the COVID-19 pandemic on this sought-after area.
+
+All the affected ZIP codes are in Manhattan, including neighborhoods like Lower East Side, Gramercy Park, Chelsea, and Lower Manhattan itself. These central, high-rent areas usually attract a lot of residential and commercial interest, making them especially vulnerable to changes in population movement and economic activity.
+
+The declines likely come from lower demand due to remote work, people moving away, and less short-term rental activity during the pandemic. This data shows that Manhattan’s main rental market was hit hardest, offering valuable insights for investors, property managers, and policymakers looking at the short-term impacts of the pandemic on urban housing markets.
