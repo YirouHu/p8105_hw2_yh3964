@@ -113,7 +113,6 @@ Read and clean the Mr. Trash Wheel sheet:
 - round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
 
 ```{r}
-#readxl::read_excel("202409 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel",range ="A2:N586", na = c("NA", "", ".")) |>
 mr_trash_wheel_df =
   readxl::read_excel("202509 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel",range = "A2:N709") |>
   janitor::clean_names() |>
@@ -130,10 +129,6 @@ Read and clean Professor Trash Wheel dataset
 
 ```{r}
 professor_trash_wheel_df = 
-  #read_excel("202409 Trash Wheel Collection Data.xlsx", 
-  #           sheet = "Professor Trash Wheel",
-  #          range = "A2:M120",
-  #           na = c("NA", "", ".")) |> 
   readxl::read_excel("202509 Trash Wheel Collection Data.xlsx", 
              sheet = "Professor Trash Wheel",
              range = "A2:M134"
