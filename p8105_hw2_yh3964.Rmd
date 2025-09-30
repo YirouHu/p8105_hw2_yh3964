@@ -206,3 +206,63 @@ Write a paragraph about these data
 
 
 # Problem 3
+
+Zillow Observed Rent Index (ZORI) in New York City between January 2015 and August 2024.
+
+Firstsly ,we load the dataset.
+```{r load dataset}
+zip_codes_df = read_csv("zillow_data/Zip Codes.csv")
+zori_df = read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv")
+```
+
+- create a single, well-organized dataset with all the information contained in these data files. 
+- To that end: import, clean, tidy, and otherwise wrangle each of these datasets
+- check for completeness and correctness across datasets (e.g. by viewing individual datasets and monitoring warning messages).
+- merge to create a single, final dataset
+- organize this so that variables and observations are in meaningful orders.
+
+We first do data cleaning about zip code datasets.
+```{r}
+zip_codes_df = 
+  read_csv("zillow_data/Zip Codes.csv") |>
+  rename(
+    county = County,
+    state_fips = "State FIPS",
+    county_code = "County Code",
+    county_fips = "County FIPS",
+    zip_code = ZipCode,
+    file_date = "File Date",
+    neighborhood = Neighborhood
+  ) |>
+  drop_na(neighborhood) |>
+  filter(neighborhood != "NA") |>
+  mutate(file_date = as.Date(file_date, format = "%m/%d/%y"))
+```
+
+
+Next, we do data cleaning on zillow rent price dataset.
+```{r}
+zillow_rent_df = 
+  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
+  rename(
+     zip_code = "RegionName",
+     region_id = "RegionID",
+     size_rank = "SizeRank",
+     region_type = "RegionType",
+     state_name = "StateName",
+     state = "State",
+     city = "City",
+     metro = "Metro",
+     county_name = "CountyName"
+  ) |>
+  select(zip_code, everything()) |>
+  pivot_longer(
+    cols = starts_with("20"),
+    names_to = "month",
+    values_to = "rent"
+  ) |>
+  drop_na(rent)
+  
+```
+
+
