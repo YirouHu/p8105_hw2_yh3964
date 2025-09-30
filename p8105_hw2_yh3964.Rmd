@@ -23,32 +23,21 @@ We will do data cleaning for pols-month.csv firstly.
 ```{r}
 pols_month = read_csv("fivethirtyeight_datasets/pols-month.csv") |>
   janitor::clean_names() |>
-  separate(mon, into = c("year", "month", "day"), sep = "-") |>
+  separate(mon, into = c("year", "month", "day"), convert = TRUE) |>
   mutate(
-    month = case_match(
-      month, 
-    "01"~"Jan",
-    "02"~"Feb",
-    "03"~"Mar",
-    "04"~"Apr",
-    "05"~"May",
-    "06"~"Jun",
-    "07"~"Jul",
-    "08"~"Aug",
-    "09"~"Sep",
-    "10"~"Oct",
-    "11"~"Nov",
-    "12"~"Dec")
-  )|>
-  mutate(
-    president=case_match(
+    month = month.name[as.numeric(month)],
+    year = as.character(year),
+    president = 
+      case_match(
       prez_gop,
-    0~"dem",
-    1~"gop",
-    2~"gop"
-    )
-  )|>
-  mutate(year = as.integer(year), day = as.integer(day)) |>
+        1 ~ "gop",
+      ),
+    president =
+      case_match(
+        prez_dem,
+        1 ~ "dem"
+      )
+    ) |>
   select(-c("day", "prez_gop", "prez_dem"))
 ```
 
@@ -57,30 +46,19 @@ Second, clean the data in snp.csv
 - organize so that year and month are the leading columns.
 
 ```{r}
-snp = read.csv("fivethirtyeight_datasets/snp.csv") |>
+snp = 
+  read.csv("fivethirtyeight_datasets/snp.csv") |>
   janitor::clean_names() |>
-  separate(date, into = c("month", "day", "year"), sep = "/" ) |>
-  mutate(month = as.integer(month), year = as.integer(year)) |>
-  arrange(year, month) |>
   mutate(
-    month = case_match(
-      month,
-      1 ~ "Jan",
-      2 ~ "Feb",
-      3 ~ "Mar",
-      4 ~ "Apr",
-      5 ~ "May",
-      6 ~ "Jun",
-      7 ~ "Jul",
-      8 ~ "Aug",
-      9 ~ "Sep",
-      10 ~ "Oct",
-      11 ~ "Nov",
-      12 ~ "Dec"
-    )) |>
-  relocate(year, month) |>
-  select(-"day")
-
+    date = as.Date(date, format = "%m/%d/%y")
+  ) |>
+  separate(date, into = c("year", "month", "day"), convert = TRUE ) |>
+  mutate(
+    month = month.name[as.numeric(month)],
+    year = as.character(year)
+  ) |>
+  arrange(year,month)|>
+  select(-day)
 ```
 
 Third, tidy the unemployment data so that it can be merged with the previous datasets.
@@ -97,16 +75,22 @@ unemployment =
     Jan:Dec, 
     names_to = "month",
     values_to = "unemployment"
-  ) 
+  ) |>
+  drop_na() |>
+  mutate(year = as.character(year))
   
 ```
 
+We firstly merge pols_month with snp.
+Next, we merger Joint_df_pol_snp with unemployment data
+
 ```{r}
-Joint_df = 
+Joint_df_pol_snp_unemploy =
   left_join(
-  x = left_join(pols_month,snp, by = c("year", "month")), 
-  y = unemployment, by = c("year", "month")
-  )
+    x = left_join(pols_month,snp, by = c("year", "month")), 
+    y = unemployment, 
+    by = c("year", "month")
+    )
 ```
 
 It’s important to note that the close and unemployment variables contain some NA values, which mean the corresponding values are missing at those positions.
@@ -117,10 +101,7 @@ In detail:
 - The snp data has `r nrow(snp)` observations and `r ncol(snp)` variables, covering years from `r range(snp$year)[1]` to `r range(snp$year)[2]`, and it contains information related to the S&P stock market index.
 - The unemployment data has `r nrow(unemployment)` observations and `r ncol(unemployment)` variables, spanning `r range(unemployment$year)[1]` to `r range(unemployment$year)[2]`, and it tracks monthly unemployment rates.
 - The pols_month dataset is a simplified version focusing on the president’s party affiliation. It has `r nrow(pols_month)` rows and `r ncol(pols_month)` columns, with years ranging from `r range(pols_month$year)[1]` to `r range(pols_month$year)[2]`.
-- The merged Joint_df dataset combines pols_month, snp, and unemployment. It has `r nrow(Joint_df)` rows and `r ncol(Joint_df)` columns, covering years from `r range(Joint_df$year)[1]` to `r range(Joint_df$year)[2]`.
-
-In addition, we can compare the average unemployment value in a random year with two party affiliations. For Decembers after 2002, the average unemployment rate when a Democrat was president was `r filter(Joint_df, month == "Dec", year >= 2002, president == "dem") |> pull(unemployment) |> mean()`. Furthermore, the average unemployment rate when a Republican was president was `r filter(Joint_df, month == "Dec", year >= 2002, president == "gop") |> pull(unemployment) |> mean()`. 
-
+- The merged Joint_df_pol_snp_unemploy dataset combines pols_month, snp, and unemployment. It has `r nrow(Joint_df_pol_snp_unemploy)` rows and `r ncol(Joint_df_pol_snp_unemploy)` columns, covering years from `r range(Joint_df_pol_snp_unemploy$year)[1]` to `r range(Joint_df_pol_snp_unemploy$year)[2]`.
 
 # Problem 2
 
