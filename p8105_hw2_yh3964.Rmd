@@ -134,7 +134,7 @@ Read and clean the Mr. Trash Wheel sheet:
 ```{r}
 #readxl::read_excel("202409 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel",range ="A2:N586", na = c("NA", "", ".")) |>
 mr_trash_wheel_df =
-  readxl::read_excel("202409 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel",range = "A2:N586") |>
+  readxl::read_excel("202509 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel",range = "A2:N709") |>
   janitor::clean_names() |>
   mutate(
     year = as.integer(year),
@@ -153,26 +153,26 @@ professor_trash_wheel_df =
   #           sheet = "Professor Trash Wheel",
   #          range = "A2:M120",
   #           na = c("NA", "", ".")) |> 
-  readxl::read_excel("202409 Trash Wheel Collection Data.xlsx", 
+  readxl::read_excel("202509 Trash Wheel Collection Data.xlsx", 
              sheet = "Professor Trash Wheel",
-             range = "A2:M120"
+             range = "A2:M134"
              ) |>
   janitor::clean_names() |> 
+  drop_na(dumpster) |>
   mutate(
     trash_wheel = "Professor", 
     year = as.numeric(year),
     homes_powered = weight_tons * 500 / 30
-    ) |> 
-  select(-dumpster)
+    ) 
 ```
 
 Read and clean Gwynnda dataset
 
 ```{r}
 gwynnda_trash_wheel_df = 
-  readxl::read_excel("202409 Trash Wheel Collection Data.xlsx", 
-             sheet = "Gwynnda Trash Wheel",
-             range = "A2:L265",
+  readxl::read_excel("202509 Trash Wheel Collection Data.xlsx", 
+             sheet = "Gwynns Falls Trash Wheel",
+             range = "A2:L351",
              na = c("NA", "", ".")) |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |>
@@ -311,14 +311,14 @@ The resulting tidy dataset `merged_data_df` combines information from the Zillow
 - The dataset contains a total of `r nrow(merged_data_df)` observations.  
 - There are `r n_distinct(merged_data_df$zip_code)` unique ZIP codes included.  
 - The dataset covers `r n_distinct(merged_data_df$neighborhood)` unique neighborhoods across all boroughs.
-- Date range of the rent observations: from `r min(merged_data_df$month)` to `r max(merged_data_df$month)` 
+- Date range of the rent observations: from `r min(merged_data_df$date)` to `r max(merged_data_df$date)` 
 
 Each observation includes the following variables:
 
 - `zip_code`: the ZIP code of the area  
 - `county_name`: the county name corresponding to the ZIP code  
 - `neighborhood`: the neighborhood name associated with the ZIP code  
-- `month`: the month of the rent observation  
+- `date`: the date of the rent observation  
 - `rent`: the Zillow Observed Rent Index (ZORI) for the corresponding month and ZIP code
 
 Missing values in `rent` or `neighborhood` have been removed to ensure completeness. The variables are organized in a meaningful order, with `zip_code`, `county_name`, and `neighborhood` first, followed by rent and month information.
