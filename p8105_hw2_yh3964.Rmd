@@ -265,4 +265,29 @@ zillow_rent_df =
   
 ```
 
+Moreover, we merge them together by using left join methods and drop unimportant and repeated variables.
+
+```{r}
+merged_data_df = 
+  left_join(zillow_rent_df, zip_codes_df, by = "zip_code") |>
+  select(-county, -state) |>
+  relocate(zip_code, county_name, neighborhood, rent)
+  
+```
+
+We will use two ways to check the the ZIP codes appear in the ZIP code dataset but not in the Zillow Rental Price dataset.
+
+```{r}
+difference_in_zipcodes_df = 
+  anti_join(zip_codes_df, zillow_rent_df)
+difference_in_zipcodes_df
+```
+
+```{r}
+zip_not_in_zillow =
+  zip_codes_df |>
+  filter(!zip_code %in% zillow_rent_df$zip_code)
+zip_not_in_zillow
+```
+
 
